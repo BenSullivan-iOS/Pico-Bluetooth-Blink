@@ -10,3 +10,5 @@ I used the below repo for the Pico code. I used CMake and VSCode and just had to
 This repo also includes code for Flutter.
 
 https://github.com/sonnny/picow_ble_nordic_spp
+
+![alt text]([http://url/to/img.png](https://pbs.twimg.com/media/Fpfazu4WcAEjY4g?format=jpg&name=large))
