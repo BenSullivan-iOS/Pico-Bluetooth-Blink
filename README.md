@@ -11,4 +11,4 @@ This repo also includes code for Flutter.
 
 https://github.com/sonnny/picow_ble_nordic_spp
 
-![alt text]([http://url/to/img.png](https://pbs.twimg.com/media/Fpfazu4WcAEjY4g?format=jpg&name=large))
+![Image](https://pbs.twimg.com/media/Fpfazu4WcAEjY4g?format=jpg&name=large)
