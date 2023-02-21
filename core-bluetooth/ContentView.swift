@@ -3,6 +3,7 @@
 //  core-bluetooth
 //
 //  Created by Andrew on 2022-07-14.
+//  Modified by MrMcSwiftface on 2023-02-21
 //
 
 import SwiftUI
@@ -10,10 +11,9 @@ import CoreBluetooth
 
 class BluetoothViewModel: NSObject, ObservableObject {
     
-    var picoPeripheral: CBPeripheral?
-    
     @Published var stateText: [String] = []
     
+    private var picoPeripheral: CBPeripheral?
     private var centralManager: CBCentralManager?
     private var timer: Timer!
     
@@ -48,6 +48,7 @@ extension BluetoothViewModel: CBCentralManagerDelegate {
         guard picoPeripheral == nil else { return }
         
         // I'm not sure how to find some kind of UUID for ensuring it's the matching device.
+        // Please create a PR if you know the correct way to do this.
         // Both of these names have appeared for my Pico
         if peripheral.name == "nRF SPP" || peripheral.name == "Nordic SPP Counter" {
             peripheral.delegate = self
@@ -60,6 +61,8 @@ extension BluetoothViewModel: CBCentralManagerDelegate {
 
 extension BluetoothViewModel: CBPeripheralDelegate {
     
+    /// Called when services are discovered
+    /// the services can be used to start discovering characteristics
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         guard let services = peripheral.services else {
             return
@@ -72,6 +75,8 @@ extension BluetoothViewModel: CBPeripheralDelegate {
         }
     }
     
+    /// Called when characteristics have been discovered
+    /// Kicks off a loop to toggle the LED
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
 
         guard let characteristics = service.characteristics else {
@@ -79,13 +84,13 @@ extension BluetoothViewModel: CBPeripheralDelegate {
         }
         
         stateText.append("\(characteristics.count) characteristics discovered")
-        
-        let data = "t".data(using: .utf8)!
-        
         stateText.append("Writing value `t` every 0.5 seconds to toggle onboard LED")
 
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
-            peripheral.writeValue(data, for: characteristics.first!, type: .withoutResponse)
+            /// Writing a value to the peripheral send the value to the device
+            peripheral.writeValue(Data("t".utf8),
+                                  for: characteristics.first!,
+                                  type: .withoutResponse)
         }
     }
 }
